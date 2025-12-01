@@ -202,6 +202,10 @@ class MiniCourt():
 
             output_player_bboxes_dict = {}
             for player_id, bbox in player_bbox.items():
+                # Skip if player_id not in our tracked players
+                if player_id not in player_heights:
+                    continue
+                    
                 foot_position = get_foot_position(bbox)
 
                 # Get The closest keypoint in pixels
@@ -243,6 +247,9 @@ class MiniCourt():
     
     def draw_points_on_mini_court(self,frames,postions, color=(0,255,0)):
         for frame_num, frame in enumerate(frames):
+            # Check if frame_num exists in positions
+            if frame_num >= len(postions):
+                continue
             for _, position in postions[frame_num].items():
                 x,y = position
                 x= int(x)

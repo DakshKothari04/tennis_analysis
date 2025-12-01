@@ -70,6 +70,13 @@ def main():
     for ball_shot_ind in range(len(ball_shot_frames)-1):
         start_frame = ball_shot_frames[ball_shot_ind]
         end_frame = ball_shot_frames[ball_shot_ind+1]
+        
+        # Check if frames are within bounds
+        if end_frame >= len(ball_mini_court_detections) or start_frame >= len(ball_mini_court_detections):
+            continue
+        if end_frame >= len(player_mini_court_detections) or start_frame >= len(player_mini_court_detections):
+            continue
+            
         ball_shot_time_in_seconds = (end_frame-start_frame)/24 # 24fps
 
         # Get distance covered by the ball
@@ -90,6 +97,11 @@ def main():
 
         # opponent player speed
         opponent_player_id = 1 if player_shot_ball == 2 else 2
+        
+        # Check if opponent player exists in detections
+        if opponent_player_id not in player_mini_court_detections[start_frame] or opponent_player_id not in player_mini_court_detections[end_frame]:
+            continue
+            
         distance_covered_by_opponent_pixels = measure_distance(player_mini_court_detections[start_frame][opponent_player_id],
                                                                 player_mini_court_detections[end_frame][opponent_player_id])
         distance_covered_by_opponent_meters = convert_pixel_distance_to_meters( distance_covered_by_opponent_pixels,
@@ -141,8 +153,7 @@ def main():
     ## Draw frame number on top left corner
     for i, frame in enumerate(output_video_frames):
         cv2.putText(frame, f"Frame: {i}",(10,30),cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-
-    save_video(output_video_frames, "output_videos/output_video.avi")
+    save_video(output_video_frames, "output_videos/output_video.mp4")
 
 if __name__ == "__main__":
     main()

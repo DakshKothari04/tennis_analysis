@@ -4,6 +4,10 @@ import cv2
 def draw_player_stats(output_video_frames,player_stats):
 
     for index, row in player_stats.iterrows():
+        # Skip if frame index is out of bounds
+        if index >= len(output_video_frames):
+            continue
+            
         player_1_shot_speed = row['player_1_last_shot_speed']
         player_2_shot_speed = row['player_2_last_shot_speed']
         player_1_speed = row['player_1_last_player_speed']
